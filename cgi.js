@@ -27,6 +27,8 @@ function cgi(cgiBin, options) {
   options = extend({}, cgi.DEFAULTS, options);
 
   return function layer(req, res, next) {
+    req.pause();
+
     if (!next) {
       // define a default "next" handler if none was passed
       next = function(err) {
@@ -105,8 +107,6 @@ function cgi(cgiBin, options) {
     var cgiSpawn = spawn(cgiBin, options.args, options);
     debug('cgi spawn (pid: %d)', cgiSpawn.pid);
 
-    // The request body is piped to 'stdin' of the CGI spawn
-    req.pipe(cgiSpawn.stdin);
 
     // If `options.stderr` is set to a Stream instance, then re-emit the
     // 'data' events onto the stream.
@@ -161,6 +161,10 @@ function cgi(cgiBin, options) {
         options.stderr.removeListener('data', onData);
       }
     });
+
+    // The request body is piped to 'stdin' of the CGI spawn
+    req.pipe(cgiSpawn.stdin);
+    req.resume();
   };
 }
 

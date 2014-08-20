@@ -7,6 +7,22 @@ This module implements [RFC 3875][rfc3875], and offers an easy interface to run
 and serve CGI executables using [Node][]'s HTTP server. I wrote this so I could
 directly serve [GitWeb][node-gitweb] through Node.
 
+**Note:** This repository was forked from https://github.com/TooTallNate/node-cgi for the purposes of resolving an issue with long-running scripts... or at least I *think* the issue was that the script was long-running, I'm new to this.
+
+I was posting JSON to a Python script and kept receiving this error:
+
+``` bash
+Traceback (most recent call last):
+  File "cgi-bin/batch.py", line 53, in <module>
+    res = json.loads(data)
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/json/__init__.py", line 338, in loads
+    return _default_decoder.decode(s)
+  File "/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/json/decoder.py", line 365, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+TypeError: expected string or buffer
+```
+If anyone has as explanation as to why it was failing until I added ```req.pause();``` and ```req.resume();```, I'd love to hear it.
+
 
 CGI Scripts?
 ------------
@@ -25,7 +41,7 @@ Here's what a simple "Hello World" CGI script in `sh` would look like:
 echo "Status: 200"
 echo "Content-Type: text/plain"
 echo
-    
+
 # Followed by a response body
 echo "Hello World!"
 ```
