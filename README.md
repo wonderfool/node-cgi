@@ -21,6 +21,8 @@ Traceback (most recent call last):
     obj, end = self.raw_decode(s, idx=_w(s, 0).end())
 TypeError: expected string or buffer
 ```
+...where "data" was pulled from ```sys.stdin.read().strip()```.
+
 If anyone has as explanation as to why it was failing until I added ```req.pause();``` and ```req.resume();```, I'd love to hear it.
 
 
